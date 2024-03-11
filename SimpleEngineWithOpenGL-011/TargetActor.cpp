@@ -12,4 +12,12 @@ TargetActor::TargetActor()
 	// Add collision box
 	BoxComponent* bc = new BoxComponent(this);
 	bc->setObjectBox(Assets::getMesh("Mesh_Target").getBox());
+
+	
+}
+
+void TargetActor::Hit()
+{
+	setState(ActorState::Dead);
+
 }

@@ -8,6 +8,10 @@
 #include "TargetActor.h"
 #include "Game.h"
 
+#include <iostream>
+
+using namespace std;
+
 BallMoveComponent::BallMoveComponent(Actor* ownerP) : MoveComponent(ownerP), player(nullptr)
 {
 }
@@ -25,6 +29,18 @@ void BallMoveComponent::update(float dt)
 	Vector3 dir = owner.getForward();
 	Vector3 end = start + dir * segmentLength;
 
+	
+
+	if (oceanHit == false)
+	{
+		
+		start.z -= 3.3f;
+
+	}
+
+	owner.setPosition(start);
+	
+
 	// Create line segment
 	LineSegment l(start, end);
 
@@ -34,12 +50,20 @@ void BallMoveComponent::update(float dt)
 	if (owner.getGame().getPhysicsSystem().segmentCast(l, info) && info.actor != player)
 	{
 		// If we collided, reflect the ball about the normal
-		dir = Vector3::reflect(dir, info.normal);
-		owner.rotateToNewForward(dir);
+		/*dir = Vector3::reflect(dir, info.normal);
+		owner.rotateToNewForward(dir);*/
+
+		oceanHit = true;
+		
+
+		setForwardSpeed(1200);
+
 		// Did we hit a target?
 		TargetActor* target = dynamic_cast<TargetActor*>(info.actor);
 		if (target)
 		{
+			target->Hit();
+
 			static_cast<BallActor*>(&owner)->hitTarget();
 		}
 	}

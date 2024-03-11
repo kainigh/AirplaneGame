@@ -10,6 +10,8 @@
 #include "BallActor.h"
 #include "BoxComponent.h"
 #include "Collisions.h"
+#include "Maths.h"
+
 
 
 FPSActor::FPSActor() :
@@ -29,14 +31,19 @@ FPSActor::FPSActor() :
 	//footstep.setPaused(true);
 
 	FPSModel = new Actor();
-	FPSModel->setScale(0.75f);
+	
+	//FPSModel->setScale(10.75f);
+	
 	meshComponent = new MeshComponent(FPSModel);
 	meshComponent->setMesh(Assets::getMesh("Mesh_Rifle"));
+
+	//meshComponent->setMesh(Assets::getMesh("Mesh_Cube"));
 
 	boxComponent = new BoxComponent(this);
 	AABB collision(Vector3(-25.0f, -25.0f, -87.5f), Vector3(25.0f, 25.0f, 87.5f));
 	boxComponent->setObjectBox(collision);
 	boxComponent->setShouldRotate(false);
+
 
 }
 
@@ -58,12 +65,20 @@ void FPSActor::updateActor(float dt)
 	modelPosition += getForward() * MODEL_OFFSET.x;
 	modelPosition += getRight() * MODEL_OFFSET.y;
 	modelPosition.z += MODEL_OFFSET.z;
+
+	move = Maths::clamp(move, -35.0f, 35.0f);
+
+	
+	modelPosition.y = move;
+	
+
 	FPSModel->setPosition(modelPosition);
+
 	Quaternion q = getRotation();
 	q = Quaternion::concatenate(q, Quaternion(getRight(), cameraComponent->getPitch()));
 	FPSModel->setRotation(q);
 
-	fixCollisions();
+	//fixCollisions();
 
 }
 
@@ -71,38 +86,45 @@ void FPSActor::actorInput(const InputState& inputState)
 {
 	float forwardSpeed = 0.0f;
 	float strafeSpeed = 0.0f;
+	float angularSpeed = 0.0f;
 	// wasd movement
+	forwardSpeed += 100.0f;
 	if (inputState.keyboard.getKeyValue(SDL_SCANCODE_W))
 	{
-		forwardSpeed += 400.0f;
+		//forwardSpeed += 400.0f;
 	}
 	if (inputState.keyboard.getKeyValue(SDL_SCANCODE_S))
 	{
-		forwardSpeed -= 400.0f;
+		//forwardSpeed -= 400.0f;
 	}
 	if (inputState.keyboard.getKeyValue(SDL_SCANCODE_A))
 	{
-		strafeSpeed -= 400.0f;
+		//strafeSpeed -= 400.0f;
+		
+		move -= 1.0f;
+
 	}
 	if (inputState.keyboard.getKeyValue(SDL_SCANCODE_D))
 	{
-		strafeSpeed += 400.0f;
+		//strafeSpeed += 400.0f;
+		move += 1.0f;
 	}
+	forwardOffset = forwardSpeed;
 	moveComponent->setForwardSpeed(forwardSpeed);
-	moveComponent->setStrafeSpeed(strafeSpeed);
+	//moveComponent->setStrafeSpeed(strafeSpeed);
 	// Mouse mouvement
 	Vector2 mousePosition = inputState.mouse.getPosition();
 	float x = mousePosition.x;
 	float y = mousePosition.y;
 	const int maxMouseSpeed = 500;
 	const float maxAngularSpeed = Maths::pi * 8;
-	float angularSpeed = 0.0f;
+	
 	if (x != 0)
 	{
 		angularSpeed = x / maxMouseSpeed;
 		angularSpeed *= maxAngularSpeed;
 	}
-	moveComponent->setAngularSpeed(angularSpeed);
+	//moveComponent->setAngularSpeed(angularSpeed);
 	const float maxPitchSpeed = Maths::pi * 8;
 	float pitchSpeed = 0.0f;
 	if (y != 0)
@@ -110,7 +132,7 @@ void FPSActor::actorInput(const InputState& inputState)
 		pitchSpeed = y / maxMouseSpeed;
 		pitchSpeed *= maxPitchSpeed;
 	}
-	cameraComponent->setPitchSpeed(pitchSpeed);
+	//cameraComponent->setPitchSpeed(pitchSpeed);
 
 	// Shoot
 	if (inputState.mouse.getButtonState(1) == ButtonState::Pressed)
@@ -123,6 +145,7 @@ void FPSActor::actorInput(const InputState& inputState)
 
 void FPSActor::shoot()
 {
+
 	// Get start point (in center of screen on near plane)
 	Vector3 screenPoint(0.0f, 0.0f, 0.0f);
 	Vector3 start = getGame().getRenderer().unproject(screenPoint);
@@ -135,7 +158,8 @@ void FPSActor::shoot()
 	// Spawn a ball
 	BallActor* ball = new BallActor();
 	ball->setPlayer(this);
-	ball->setPosition(start + dir * 20.0f);
+	//ball->setPosition(start + dir * 20.0f);
+	ball->setPosition(FPSModel->getPosition() + dir * 50.0f);
 	// Rotate the ball to face new direction
 	ball->rotateToNewForward(dir);
 	// Play shooting sound
@@ -171,6 +195,7 @@ void FPSActor::fixCollisions()
 		const AABB& planeBox = pa->getBox()->getWorldBox();
 		if (Collisions::intersect(playerBox, planeBox))
 		{
+
 			// Calculate all our differences
 			float dx1 = planeBox.max.x - playerBox.min.x;
 			float dx2 = planeBox.min.x - playerBox.max.x;

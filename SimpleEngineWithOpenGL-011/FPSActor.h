@@ -2,6 +2,8 @@
 #include "Actor.h"
 //#include "SoundEvent.h"
 #include "Vector3.h"
+#include <algorithm>
+
 
 class FPSActor : public Actor
 {
@@ -25,6 +27,12 @@ private:
 	//SoundEvent footstep;
 	float lastFootstep;
 	class BoxComponent* boxComponent;
+	
+	float move = 0.0f;
+	float forwardOffset = 0.0f;
+
+	Vector3 pos = Vector3(100.0f, 100.0f, -100.0f);
+	
 
 };
 

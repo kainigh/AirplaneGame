@@ -5,4 +5,6 @@ class TargetActor : public Actor
 {
 public:
 	TargetActor();
+
+	void Hit();
 };

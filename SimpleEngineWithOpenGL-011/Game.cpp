@@ -41,6 +41,8 @@ void Game::load()
 	Assets::loadTexture(renderer, "Res\\Textures\\Rifle.png", "Rifle");
 	Assets::loadTexture(renderer, "Res\\Textures\\Target.png", "Target");
 
+
+
 	Assets::loadMesh("Res\\Meshes\\Cube.gpmesh", "Mesh_Cube");
 	Assets::loadMesh("Res\\Meshes\\Plane.gpmesh", "Mesh_Plane");
 	Assets::loadMesh("Res\\Meshes\\Sphere.gpmesh", "Mesh_Sphere");
@@ -48,7 +50,7 @@ void Game::load()
 	Assets::loadMesh("Res\\Meshes\\RacingCar.gpmesh", "Mesh_RacingCar");
 	Assets::loadMesh("Res\\Meshes\\Target.gpmesh", "Mesh_Target");
 
-
+	
 	fps = new FPSActor();
 	follow = new FollowActor();
 	orbit = new OrbitActor();
@@ -70,9 +72,9 @@ void Game::load()
 	// Setup floor
 	const float start = -1250.0f;
 	const float size = 250.0f;
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 15; i++)
 	{
-		for (int j = 0; j < 10; j++)
+		for (int j = 0; j < 15; j++)
 		{
 			PlaneActor* p = new PlaneActor();
 			p->setPosition(Vector3(start + i * size, start + j * size, -100.0f));
@@ -113,9 +115,9 @@ void Game::load()
 	dir.specColor = Vector3(0.8f, 0.8f, 0.8f);
 
 	// Create spheres with audio components playing different sounds
-	SphereActor* soundSphere = new SphereActor();
-	soundSphere->setPosition(Vector3(500.0f, -75.0f, 0.0f));
-	soundSphere->setScale(1.0f);
+	//SphereActor* soundSphere = new SphereActor();
+	//soundSphere->setPosition(Vector3(500.0f, -75.0f, 0.0f));
+	//soundSphere->setScale(1.0f);
 	//AudioComponent* ac = new AudioComponent(soundSphere);
 	//ac->playEvent("event:/FireLoop");
 
@@ -124,17 +126,48 @@ void Game::load()
 	crosshairActor->setScale(2.0f);
 	crosshair = new SpriteComponent(crosshairActor, Assets::getTexture("Crosshair"));
 
-	/*TargetActor* t = new TargetActor();
-	t->setPosition(Vector3(1450.0f, 0.0f, 100.0f));
+	TargetActor* t = new TargetActor();
+	t->setScale(0.50f);
+	t->setPosition(Vector3(450.0f, 50.0f, -100.0f));
+
 	t = new TargetActor();
-	t->setPosition(Vector3(1450.0f, 0.0f, 400.0f));
+	t->setScale(0.25f);
+	t->setPosition(Vector3(650.0f, 50.0f, -100.0f));
+
 	t = new TargetActor();
-	t->setPosition(Vector3(1450.0f, -500.0f, 200.0f));
+	t->setScale(0.50f);
+	t->setPosition(Vector3(850.0f, -50.0f, -100.0f));
+
 	t = new TargetActor();
-	t->setPosition(Vector3(1450.0f, 500.0f, 200.0f));*/
+	t->setScale(0.75f);
+	t->setPosition(Vector3(1050.0f, 0.0f, -100.0f));
+
+	t = new TargetActor();
+	t->setScale(0.50f);
+	t->setPosition(Vector3(1250.0f, 0.0f, -100.0f));
+
+	t = new TargetActor();
+	t->setScale(0.25f);
+	t->setPosition(Vector3(1450.0f, 0.0f, -100.0f));
+	
+	t = new TargetActor();
+	t->setScale(0.25f);
+	t->setPosition(Vector3(1650.0f, 50.0f, -100.0f));
+
+	t = new TargetActor();
+	t->setScale(0.50f);
+	t->setPosition(Vector3(1850.0f, -50.0f, -100.0f));
+
+	t = new TargetActor();
+	t->setScale(0.75f);
+	t->setPosition(Vector3(2050.0f, -100.0f, -100.0f));
+
+	t = new TargetActor();
+	t->setScale(1.25f);
+	t->setPosition(Vector3(2250.0f, 150.0f, -100.0f));
 
 
-	changeCamera(2);
+	changeCamera(1);
 }
 
 void Game::processInput()
